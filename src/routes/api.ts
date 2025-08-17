@@ -11,7 +11,7 @@ router.get("/health", (req, res) => {
   res.json({ status: "OK" });
 });
 
-router.post("/api/v1/login", authController.login);
-router.post("/api/v1/register", authController.register);
+router.post("/register", authController.register);
+router.post("/login", authController.login);
 
 export default router;
