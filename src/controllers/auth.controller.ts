@@ -1,47 +1,14 @@
 import { Request, Response } from "express";
-import * as Yup from "yup";
 import bcrypt from "bcryptjs";
 import User from "../models/user.model";
-
-type TRegister = {
-  fullName: string;
-  username: string;
-  phoneNumber: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
-
-const registerValidateSchema = Yup.object({
-  fullName: Yup.string().required("Full name is required"),
-  username: Yup.string().required("Username is required"),
-  phoneNumber: Yup.string().required("Phone number is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string().min(6).required("Password is required"),
-  confirmPassword: Yup.string().oneOf(
-    [Yup.ref("password"), undefined],
-    "Passwords must match"
-  ),
-});
+import { TRegister, TLogin } from "../validators/auth.schema";
 
 export default {
   register: async (req: Request, res: Response) => {
-    const {
-      fullName,
-      username,
-      phoneNumber,
-      email,
-      password,
-      confirmPassword,
-    } = req.body as TRegister;
+    const { fullName, username, phoneNumber, email, password, role } =
+      req.body as TRegister;
 
     try {
-      await registerValidateSchema.validate(req.body);
-
-      if (password !== confirmPassword) {
-        return res.status(400).json({ message: "Passwords do not match" });
-      }
-
       const existingUsername = await User.findOne({ username });
       if (existingUsername) {
         return res.status(400).json({ message: "Username already taken" });
@@ -60,6 +27,7 @@ export default {
         phoneNumber,
         email,
         password: hashedPassword,
+        role: role || "user",
       });
 
       return res.status(201).json({
@@ -68,13 +36,36 @@ export default {
       });
     } catch (err: any) {
       console.error("Register error:", err);
-      return res.status(400).json({
-        message: err?.errors?.[0] || err?.message || "Validation error",
+      return res.status(500).json({
+        message: "Server error",
       });
     }
   },
 
-  login: (req: Request, res: Response) => {
-    res.status(200).json({ message: "Login successful" });
+  login: async (req: Request, res: Response) => {
+    const { email, password } = req.body as TLogin;
+
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(400).json({ message: "Invalid email or password" });
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(400).json({ message: "Invalid email or password" });
+      }
+
+      // 👉 nanti bisa tambahkan JWT token di sini
+      return res.status(200).json({
+        message: "Login successful",
+        user,
+      });
+    } catch (err: any) {
+      console.error("Login error:", err);
+      return res.status(500).json({
+        message: "Server error",
+      });
+    }
   },
 };

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import authController from "../controllers/auth.controller";
+import authRoutes from "./auth.route";
 
 const router = Router();
 
@@ -11,7 +11,6 @@ router.get("/health", (req, res) => {
   res.json({ status: "OK" });
 });
 
-router.post("/register", authController.register);
-router.post("/login", authController.login);
+router.use("/auth", authRoutes);
 
 export default router;
