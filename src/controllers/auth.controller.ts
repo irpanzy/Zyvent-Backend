@@ -1,8 +1,17 @@
 import { Request, Response } from "express";
 import { TLogin, TRegister } from "../validators/auth.schema";
+import { generateToken } from "../utils/jwt";
+import { Types } from "mongoose";
 import User from "../models/user.model";
 import bcrypt from "bcryptjs";
 import "dotenv/config";
+
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: Types.ObjectId;
+    role: string;
+  };
+}
 
 export default {
   register: async (req: Request, res: Response) => {
@@ -63,13 +72,38 @@ export default {
           .json({ message: "Invalid email/username or password" });
       }
 
-      // 👉 nanti bisa tambahkan JWT token di sini
+      const token = generateToken({
+        id: user._id,
+        role: user.role,
+      });
+
       return res.status(200).json({
         message: "Login successful",
-        user,
+        user: token,
       });
     } catch (err: any) {
       console.error("Login error:", err);
+      return res.status(500).json({
+        message: "Server error",
+      });
+    }
+  },
+
+  profile: async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user?.id;
+
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      return res.status(200).json({
+        message: "Profile retrieved successfully",
+        user,
+      });
+    } catch (err: any) {
+      console.error("Profile error:", err);
       return res.status(500).json({
         message: "Server error",
       });
