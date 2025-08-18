@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import bcrypt from "bcryptjs";
+import { TLogin, TRegister } from "../validators/auth.schema";
 import User from "../models/user.model";
-import { TRegister, TLogin } from "../validators/auth.schema";
+import bcrypt from "bcryptjs";
+import "dotenv/config";
 
 export default {
   register: async (req: Request, res: Response) => {
@@ -43,17 +44,23 @@ export default {
   },
 
   login: async (req: Request, res: Response) => {
-    const { email, password } = req.body as TLogin;
+    const { identifier, password } = req.body as TLogin;
 
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({
+        $or: [{ email: identifier }, { username: identifier }],
+      });
       if (!user) {
-        return res.status(400).json({ message: "Invalid email or password" });
+        return res
+          .status(400)
+          .json({ message: "Invalid email/username or password" });
       }
 
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
-        return res.status(400).json({ message: "Invalid email or password" });
+        return res
+          .status(400)
+          .json({ message: "Invalid email/username or password" });
       }
 
       // 👉 nanti bisa tambahkan JWT token di sini

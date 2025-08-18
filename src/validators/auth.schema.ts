@@ -16,7 +16,7 @@ export const registerValidateSchema = Yup.object({
 });
 
 export const loginValidateSchema = Yup.object({
-  email: Yup.string().email("Invalid email").required("Email is required"),
+  identifier: Yup.string().required("Email or username is required"),
   password: Yup.string().required("Password is required"),
 });
 

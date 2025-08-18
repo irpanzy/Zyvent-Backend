@@ -26,13 +26,19 @@ const userSchema = new mongoose.Schema<User>(
       required: true,
     },
     profilePicture: { type: String, default: "user.jpg", required: true },
-    isActive: { type: Boolean, default: true },
+    isActive: { type: Boolean, default: false },
     activationCode: { type: String },
   },
   {
     timestamps: true,
   }
 );
+
+userSchema.methods.toJSON = function () {
+  const user = this.toObject();
+  delete user.password;
+  return user;
+};
 
 const User = mongoose.model<User>("User", userSchema);
 
