@@ -1,17 +1,16 @@
 import { Router } from "express";
-import authController from "../controllers/auth.controller";
+import authRoutes from "./auth.route";
 
 const router = Router();
 
-router.get("/", (req, res) => {
+router.get("/v1", (req, res) => {
   res.json({ message: "Welcome to Zyvent API 🚀" });
 });
 
-router.get("/health", (req, res) => {
+router.get("/v1/health", (req, res) => {
   res.json({ status: "OK" });
 });
 
-router.post("/api/v1/login", authController.login);
-router.post("/api/v1/register", authController.register);
+router.use("/v1/auth", authRoutes);
 
 export default router;

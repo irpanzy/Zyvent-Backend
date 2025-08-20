@@ -1,11 +1,30 @@
 import express from "express";
 import router from "./routes/api";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
+import db from "./utils/database";
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+dotenv.config();
 
-app.use("/", router);
+async function init() {
+  try {
+    const result = await db();
+    console.log("Database status:", result);
+    const app = express();
+    const { PORT } = process.env;
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port http://localhost:${PORT}`);
-});
+    app.use(bodyParser.json());
+    app.use("/api", router);
+    app.get("/", (req, res) => {
+      res.send("Server is running");
+    });
+
+    app.listen(PORT, () => {
+      console.log(`Server is running on port http://localhost:${PORT}/api/v1`);
+    });
+  } catch (error) {
+    console.log("Failed to initialize application", error);
+  }
+}
+
+init();
