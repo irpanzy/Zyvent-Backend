@@ -38,43 +38,45 @@
     },
     "/v1/auth/register": {
       "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register a new user",
         "description": "",
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterResponse"
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Server Error"
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "fullName": {
-                    "example": "any"
-                  },
-                  "username": {
-                    "example": "any"
-                  },
-                  "phoneNumber": {
-                    "example": "any"
-                  },
-                  "email": {
-                    "example": "any"
-                  },
-                  "password": {
-                    "example": "any"
-                  },
-                  "role": {
-                    "example": "any"
-                  }
-                }
+                "$ref": "#/components/schemas/RegisterInput"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterInput"
               }
             }
           }
@@ -83,16 +85,32 @@
     },
     "/v1/auth/login": {
       "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login with email/username & password",
         "description": "",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Invalid credentials"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Server Error"
           }
         },
         "requestBody": {
@@ -100,12 +118,12 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Login"
+                "$ref": "#/components/schemas/LoginInput"
               }
             },
             "application/xml": {
               "schema": {
-                "$ref": "#/components/schemas/Login"
+                "$ref": "#/components/schemas/LoginInput"
               }
             }
           }
@@ -114,6 +132,10 @@
     },
     "/v1/auth/profile": {
       "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get logged in user profile",
         "description": "",
         "parameters": [
           {
@@ -126,16 +148,28 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Not Found"
+            "description": "User not found"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Server Error"
           }
         },
         "security": [
@@ -154,7 +188,71 @@
       }
     },
     "schemas": {
-      "Login": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "string"
+          },
+          "fullName": {
+            "type": "string",
+            "example": "string"
+          },
+          "username": {
+            "type": "string",
+            "example": "string"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "string"
+          },
+          "email": {
+            "type": "string",
+            "example": "string"
+          },
+          "role": {
+            "type": "string",
+            "example": "string"
+          }
+        },
+        "xml": {
+          "name": "User"
+        }
+      },
+      "RegisterInput": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "example": "string"
+          },
+          "username": {
+            "type": "string",
+            "example": "string"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "string"
+          },
+          "email": {
+            "type": "string",
+            "example": "string"
+          },
+          "password": {
+            "type": "string",
+            "example": "string"
+          },
+          "confirmPassword": {
+            "type": "string",
+            "example": "string"
+          }
+        },
+        "xml": {
+          "name": "RegisterInput"
+        }
+      },
+      "LoginInput": {
         "type": "object",
         "properties": {
           "identifier": {
@@ -167,7 +265,59 @@
           }
         },
         "xml": {
-          "name": "Login"
+          "name": "LoginInput"
+        }
+      },
+      "RegisterResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Registration successful"
+          },
+          "user": {
+            "xml": {
+              "name": "user"
+            },
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "xml": {
+          "name": "RegisterResponse"
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Login successful"
+          },
+          "token": {
+            "type": "string",
+            "example": "string.jwt.token"
+          }
+        },
+        "xml": {
+          "name": "LoginResponse"
+        }
+      },
+      "ProfileResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Profile retrieved successfully"
+          },
+          "user": {
+            "xml": {
+              "name": "user"
+            },
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "xml": {
+          "name": "ProfileResponse"
         }
       }
     }

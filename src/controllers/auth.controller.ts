@@ -15,7 +15,21 @@ interface AuthenticatedRequest extends Request {
 
 export default {
   register: async (req: Request, res: Response) => {
-    const { fullName, username, phoneNumber, email, password, role } =
+    /*
+      #swagger.summary = 'Register a new user'
+      #swagger.tags = ['Auth']
+      #swagger.requestBody = {
+        required: true,
+        schema: { $ref: "#/components/schemas/RegisterInput" }
+      }
+      #swagger.responses[201] = {
+        description: 'User registered successfully',
+        schema: { $ref: "#/components/schemas/RegisterResponse" }
+      }
+      #swagger.responses[400] = { description: 'Bad Request' }
+      #swagger.responses[500] = { description: 'Server Error' }
+    */
+    const { fullName, username, phoneNumber, email, password } =
       req.body as TRegister;
 
     try {
@@ -37,7 +51,7 @@ export default {
         phoneNumber,
         email,
         password: hashedPassword,
-        role: role || "user",
+        role: "user",
       });
 
       return res.status(201).json({
@@ -54,12 +68,18 @@ export default {
 
   login: async (req: Request, res: Response) => {
     /*
+      #swagger.summary = 'Login with email/username & password'
+      #swagger.tags = ['Auth']
       #swagger.requestBody = {
         required: true,
-        schema: {
-          $ref: "#/components/schemas/Login"
-        }
+        schema: { $ref: "#/components/schemas/LoginInput" }
       }
+      #swagger.responses[200] = {
+        description: 'Login successful',
+        schema: { $ref: "#/components/schemas/LoginResponse" }
+      }
+      #swagger.responses[400] = { description: 'Invalid credentials' }
+      #swagger.responses[500] = { description: 'Server Error' }
     */
     const { identifier, password } = req.body as TLogin;
 
@@ -87,7 +107,7 @@ export default {
 
       return res.status(200).json({
         message: "Login successful",
-        user: token,
+        token, 
       });
     } catch (err: any) {
       console.error("Login error:", err);
@@ -99,9 +119,17 @@ export default {
 
   profile: async (req: AuthenticatedRequest, res: Response) => {
     /*
+      #swagger.summary = 'Get logged in user profile'
+      #swagger.tags = ['Auth']
       #swagger.security = [{
         bearerAuth: []
       }]
+      #swagger.responses[200] = {
+        description: 'Profile retrieved successfully',
+        schema: { $ref: "#/components/schemas/ProfileResponse" }
+      }
+      #swagger.responses[404] = { description: 'User not found' }
+      #swagger.responses[500] = { description: 'Server Error' }
     */
     const userId = req.user?.id;
 
