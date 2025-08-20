@@ -4,10 +4,28 @@
     {
       "src": "src/index.ts",
       "use": "@vercel/node",
-      "config": { "includeFiles": ["src/**"] }
+      "config": {
+        "includeFiles": ["node_modules/swagger-ui-dist/**"]
+      }
     }
   ],
   "routes": [
+    {
+      "src": "/api-docs/(.*\\.(css|js|png|jpg|jpeg|gif|ico|svg))$",
+      "dest": "src/index.ts"
+    },
+    {
+      "src": "/api-docs/?$",
+      "dest": "src/index.ts"
+    },
+    {
+      "src": "/api-docs.json", 
+      "dest": "src/index.ts"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "src/index.ts"
+    },
     {
       "src": "/(.*)",
       "dest": "src/index.ts"
