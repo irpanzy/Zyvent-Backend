@@ -26,9 +26,38 @@ const doc = {
       },
     },
     schemas: {
-      Login: {
+      User: {
+        id: "string",
+        fullName: "string",
+        username: "string",
+        phoneNumber: "string",
+        email: "string",
+        role: "string",
+      },
+      RegisterInput: {
+        fullName: "string",
+        username: "string",
+        phoneNumber: "string",
+        email: "string",
+        password: "string",
+        confirmPassword: "string",
+      },
+      LoginInput: {
         identifier: "string",
         password: "string",
+      },
+
+      RegisterResponse: {
+        message: "Registration successful",
+        user: { $ref: "#/components/schemas/User" },
+      },
+      LoginResponse: {
+        message: "Login successful",
+        token: "string.jwt.token",
+      },
+      ProfileResponse: {
+        message: "Profile retrieved successfully",
+        user: { $ref: "#/components/schemas/User" },
       },
     },
   },
