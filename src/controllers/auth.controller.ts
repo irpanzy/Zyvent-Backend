@@ -53,6 +53,14 @@ export default {
   },
 
   login: async (req: Request, res: Response) => {
+    /*
+      #swagger.requestBody = {
+        required: true,
+        schema: {
+          $ref: "#/components/schemas/Login"
+        }
+      }
+    */
     const { identifier, password } = req.body as TLogin;
 
     try {
@@ -90,6 +98,11 @@ export default {
   },
 
   profile: async (req: AuthenticatedRequest, res: Response) => {
+    /*
+      #swagger.security = [{
+        bearerAuth: []
+      }]
+    */
     const userId = req.user?.id;
 
     try {
