@@ -10,6 +10,8 @@ export interface User {
   profilePicture: string;
   isActive: boolean;
   activationCode: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const userSchema = new mongoose.Schema<User>(

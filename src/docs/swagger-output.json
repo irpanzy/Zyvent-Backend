@@ -178,6 +178,37 @@
           }
         ]
       }
+    },
+    "/v1/auth/activation/{activationCode}": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Activate user account",
+        "description": "",
+        "parameters": [
+          {
+            "name": "activationCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Activation code from email"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account activated successfully"
+          },
+          "400": {
+            "description": "Invalid or expired activation code"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
     }
   },
   "components": {

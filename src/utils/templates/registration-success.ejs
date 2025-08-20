@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Selamat Datang di Zyvent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f5f7fa;
+        line-height: 1.6;
+        color: #333;
+        padding: 20px 0;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+
+      .header {
+        background: #7A7A73;
+        color: white;
+        padding: 40px 30px;
+        text-align: center;
+      }
+
+      .brand {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        letter-spacing: 1px;
+      }
+
+      .tagline {
+        font-size: 15px;
+        opacity: 0.9;
+        font-weight: 300;
+      }
+
+      .content {
+        padding: 40px 30px;
+      }
+
+      .welcome-text {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 16px;
+      }
+
+      .description {
+        font-size: 16px;
+        color: #6b7280;
+        margin-bottom: 32px;
+        line-height: 1.6;
+      }
+
+      .user-info {
+        background: #f9fafb;
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 32px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .info-row:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      .info-label {
+        font-weight: 500;
+        color: #374151;
+        font-size: 14px;
+      }
+
+      .info-value {
+        font-weight: 400;
+        color: #6b7280;
+        font-size: 14px;
+        text-align: right;
+      }
+
+      .cta-section {
+        background: #f3f4f6;
+        border-radius: 8px;
+        padding: 32px 24px;
+        text-align: center;
+        margin-bottom: 32px;
+      }
+
+      .cta-text {
+        font-size: 16px;
+        color: #374151;
+        margin-bottom: 24px;
+        font-weight: 500;
+      }
+
+      .btn {
+        display: inline-block;
+        background: #7A7A73;
+        color: white;
+        text-decoration: none;
+        padding: 14px 32px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        transition: background-color 0.2s ease;
+      }
+
+      .btn:hover {
+        background: #57564F;
+      }
+
+      .notes {
+        background: #EDA35A;
+        border: 1px solid #f59e0b;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 32px;
+      }
+
+      .notes-title {
+        font-weight: 600;
+        color: #92400e;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      .notes-list {
+        color: #92400e;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .backup-link {
+        background: #f3f4f6;
+        border-radius: 4px;
+        padding: 8px 12px;
+        font-family: monospace;
+        font-size: 12px;
+        word-break: break-all;
+        margin-top: 8px;
+        color: #4b5563;
+      }
+
+      .footer {
+        background: #f9fafb;
+        padding: 24px 30px;
+        text-align: center;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      .support-info {
+        font-size: 14px;
+        color: #6b7280;
+        margin-bottom: 16px;
+      }
+
+      .copyright {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-top: 16px;
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 640px) {
+        body {
+          padding: 10px 0;
+        }
+
+        .container {
+          margin: 0 10px;
+          border-radius: 8px;
+        }
+
+        .header {
+          padding: 32px 20px;
+        }
+
+        .brand {
+          font-size: 22px;
+        }
+
+        .content {
+          padding: 32px 20px;
+        }
+
+        .welcome-text {
+          font-size: 18px;
+        }
+
+        .description {
+          font-size: 15px;
+        }
+
+        .user-info {
+          padding: 20px;
+        }
+
+        .info-row {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 4px;
+        }
+
+        .info-value {
+          text-align: left;
+          font-weight: 500;
+        }
+
+        .cta-section {
+          padding: 24px 20px;
+        }
+
+        .btn {
+          padding: 12px 24px;
+          font-size: 15px;
+          width: 100%;
+          max-width: 280px;
+        }
+
+        .footer {
+          padding: 20px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          margin: 0 5px;
+        }
+
+        .header {
+          padding: 24px 16px;
+        }
+
+        .content {
+          padding: 24px 16px;
+        }
+
+        .user-info {
+          padding: 16px;
+        }
+
+        .cta-section {
+          padding: 20px 16px;
+        }
+
+        .notes {
+          padding: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="brand">ZYVENT</div>
+        <div class="tagline">Event Management Platform</div>
+      </div>
+
+      <div class="content">
+        <h1 class="welcome-text">Halo <%= username %>!</h1>
+        
+        <p class="description">
+          Terima kasih sudah mendaftar di Zyvent. Akun kamu sudah berhasil dibuat, 
+          tinggal satu langkah lagi untuk bisa mulai menggunakan semua fitur yang ada.
+        </p>
+
+        <div class="user-info">
+          <div class="info-row">
+            <span class="info-label">Nama: </span>
+            <span class="info-value"><%= fullName %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Email: </span>
+            <span class="info-value"><%= email %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Username: </span>
+            <span class="info-value">@<%= username %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Tanggal Daftar: </span>
+            <span class="info-value"><%= createdAt %></span>
+          </div>
+        </div>
+
+        <div class="cta-section">
+          <p class="cta-text">Aktivasi akun untuk mulai menggunakan Zyvent</p>
+          <a href="<%= activationLink %>" class="btn">Aktivasi Akun</a>
+        </div>
+
+        <div class="notes">
+          <div class="notes-title">Penting untuk diperhatikan:</div>
+          <div class="notes-list">
+            • Link aktivasi berlaku selama 24 jam<br>
+            • Kalau tombol tidak berfungsi, copy link di bawah ini:
+            <div class="backup-link"><%= activationLink %></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="support-info">
+          Ada pertanyaan? Hubungi kami di support@zyvent.com
+        </div>
+        <div class="copyright">
+          © 2025 Zyvent. Email otomatis, mohon tidak dibalas.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
