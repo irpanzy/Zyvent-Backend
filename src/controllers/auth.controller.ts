@@ -112,6 +112,7 @@ export default {
         schema: { $ref: "#/components/schemas/LoginResponse" }
       }
       #swagger.responses[400] = { description: 'Invalid credentials' }
+      #swagger.responses[403] = { description: 'Account not activated' }
       #swagger.responses[500] = { description: 'Server Error' }
     */
     const { identifier, password } = req.body as TLogin;
@@ -131,6 +132,15 @@ export default {
         return res
           .status(400)
           .json({ message: "Invalid email/username or password" });
+      }
+
+      // Check if account is activated
+      if (!user.isActive) {
+        return res.status(403).json({
+          message:
+            "Account not activated. Please check your email and activate your account before logging in.",
+          code: "ACCOUNT_NOT_ACTIVATED",
+        });
       }
 
       const token = generateToken({
