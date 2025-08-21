@@ -4,6 +4,8 @@ import { generateToken } from "../utils/jwt";
 import { Types } from "mongoose";
 import User from "../models/user.model";
 import bcrypt from "bcryptjs";
+import { renderMailTemplate, sendMail } from "../utils/mail/mail";
+import crypto from "crypto";
 import "dotenv/config";
 
 interface AuthenticatedRequest extends Request {
@@ -45,18 +47,49 @@ export default {
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const result = await User.create({
+      const activationCode = crypto.randomBytes(32).toString("hex");
+
+      const user = await User.create({
         fullName,
         username,
         phoneNumber,
         email,
         password: hashedPassword,
         role: "user",
+        activationCode,
       });
 
+      try {
+        const contentMail = (await renderMailTemplate("registration-success", {
+          username: user.username,
+          fullName: user.fullName,
+          email: user.email,
+          createdAt: user.createdAt?.toISOString().split("T")[0],
+          activationLink: `${process.env.CLIENT_HOST}/api/v1/auth/activation?code=${user.activationCode}`,
+        })) as string;
+
+        await sendMail({
+          from: process.env.EMAIL_SMTP_USER,
+          to: user.email,
+          subject: "Selamat Datang di Zyvent - Aktivasi Akun",
+          html: contentMail,
+        });
+
+        console.log(`Welcome email sent to: ${user.email}`);
+      } catch (emailError) {
+        console.error("Failed to send welcome email:", emailError);
+        // Don't fail registration if email fails
+      }
+
       return res.status(201).json({
-        message: "Registration successful",
-        user: result,
+        message:
+          "Registration successful. Please check your email to activate your account.",
+        user: {
+          id: user._id,
+          fullName: user.fullName,
+          username: user.username,
+          email: user.email,
+        },
       });
     } catch (err: any) {
       console.error("Register error:", err);
@@ -79,6 +112,7 @@ export default {
         schema: { $ref: "#/components/schemas/LoginResponse" }
       }
       #swagger.responses[400] = { description: 'Invalid credentials' }
+      #swagger.responses[403] = { description: 'Account not activated' }
       #swagger.responses[500] = { description: 'Server Error' }
     */
     const { identifier, password } = req.body as TLogin;
@@ -100,6 +134,15 @@ export default {
           .json({ message: "Invalid email/username or password" });
       }
 
+      // Check if account is activated
+      if (!user.isActive) {
+        return res.status(403).json({
+          message:
+            "Account not activated. Please check your email and activate your account before logging in.",
+          code: "ACCOUNT_NOT_ACTIVATED",
+        });
+      }
+
       const token = generateToken({
         id: user._id,
         role: user.role,
@@ -107,7 +150,7 @@ export default {
 
       return res.status(200).json({
         message: "Login successful",
-        token, 
+        token,
       });
     } catch (err: any) {
       console.error("Login error:", err);
@@ -145,6 +188,68 @@ export default {
       });
     } catch (err: any) {
       console.error("Profile error:", err);
+      return res.status(500).json({
+        message: "Server error",
+      });
+    }
+  },
+
+  activate: async (req: Request, res: Response) => {
+    /*
+      #swagger.summary = 'Activate user account'
+      #swagger.tags = ['Auth']
+      #swagger.parameters['code'] = {
+        in: 'query',
+        description: 'Activation code from email',
+        required: true,
+        type: 'string'
+      }
+      #swagger.responses[200] = {
+        description: 'Account activated successfully',
+        schema: { $ref: "#/components/schemas/ActivationResponse" }
+      }
+      #swagger.responses[400] = { description: 'Invalid or expired activation code' }
+      #swagger.responses[500] = { description: 'Server Error' }
+    */
+    const { code } = req.query;
+
+    if (!code || typeof code !== "string") {
+      return res.status(400).json({
+        message: "Activation code is required",
+      });
+    }
+
+    try {
+      const user = await User.findOne({ activationCode: code });
+      if (!user) {
+        return res.status(400).json({
+          message: "Invalid or expired activation code",
+        });
+      }
+
+      if (user.isActive) {
+        return res.status(400).json({
+          message: "Account is already activated",
+        });
+      }
+
+      // Activate the user
+      user.isActive = true;
+      user.activationCode = "";
+      await user.save();
+
+      return res.status(200).json({
+        message: "Account activated successfully! You can now login.",
+        user: {
+          id: user._id,
+          fullName: user.fullName,
+          username: user.username,
+          email: user.email,
+          isActive: user.isActive,
+        },
+      });
+    } catch (err: any) {
+      console.error("Activation error:", err);
       return res.status(500).json({
         message: "Server error",
       });

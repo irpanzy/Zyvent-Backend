@@ -178,6 +178,63 @@
           }
         ]
       }
+    },
+    "/v1/auth/activation": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Activate user account",
+        "description": "",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "Activation code from email",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "schema",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account activated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivationResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or expired activation code"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -318,6 +375,24 @@
         },
         "xml": {
           "name": "ProfileResponse"
+        }
+      },
+      "ActivationResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Account activated successfully! You can now login."
+          },
+          "user": {
+            "xml": {
+              "name": "user"
+            },
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "xml": {
+          "name": "ActivationResponse"
         }
       }
     }

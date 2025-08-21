@@ -11,5 +11,6 @@ const router = Router();
 router.post("/register", validateRegister, authController.register);
 router.post("/login", validateLogin, authController.login);
 router.get("/profile", validateProfile, authController.profile);
+router.get("/activation", authController.activate);
 
 export default router;
