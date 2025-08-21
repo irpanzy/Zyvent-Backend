@@ -46,7 +46,6 @@ const doc = {
         identifier: "string",
         password: "string",
       },
-
       RegisterResponse: {
         message: "Registration successful",
         user: { $ref: "#/components/schemas/User" },
@@ -57,6 +56,10 @@ const doc = {
       },
       ProfileResponse: {
         message: "Profile retrieved successfully",
+        user: { $ref: "#/components/schemas/User" },
+      },
+      ActivationResponse: {
+        message: "Account activated successfully! You can now login.",
         user: { $ref: "#/components/schemas/User" },
       },
     },

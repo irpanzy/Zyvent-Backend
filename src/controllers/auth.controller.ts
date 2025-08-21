@@ -46,8 +46,8 @@ export default {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      
-      const activationCode = crypto.randomBytes(32).toString('hex');
+
+      const activationCode = crypto.randomBytes(32).toString("hex");
 
       const user = await User.create({
         fullName,
@@ -59,15 +59,14 @@ export default {
         activationCode,
       });
 
-      // Send welcome email with activation link
       try {
-        const contentMail = await renderMailTemplate("registration-success", {
+        const contentMail = (await renderMailTemplate("registration-success", {
           username: user.username,
           fullName: user.fullName,
           email: user.email,
-          createdAt: user.createdAt?.toISOString().split('T')[0], 
-          activationLink: `${process.env.CLIENT_HOST}/auth/activation/${user.activationCode}`,
-        }) as string;
+          createdAt: user.createdAt?.toISOString().split("T")[0],
+          activationLink: `${process.env.CLIENT_HOST}/api/v1/auth/activation?code=${user.activationCode}`,
+        })) as string;
 
         await sendMail({
           from: process.env.EMAIL_SMTP_USER,
@@ -83,7 +82,8 @@ export default {
       }
 
       return res.status(201).json({
-        message: "Registration successful. Please check your email to activate your account.",
+        message:
+          "Registration successful. Please check your email to activate your account.",
         user: {
           id: user._id,
           fullName: user.fullName,
@@ -140,7 +140,7 @@ export default {
 
       return res.status(200).json({
         message: "Login successful",
-        token, 
+        token,
       });
     } catch (err: any) {
       console.error("Login error:", err);
@@ -188,31 +188,38 @@ export default {
     /*
       #swagger.summary = 'Activate user account'
       #swagger.tags = ['Auth']
-      #swagger.parameters['activationCode'] = {
-        in: 'path',
+      #swagger.parameters['code'] = {
+        in: 'query',
         description: 'Activation code from email',
         required: true,
         type: 'string'
       }
       #swagger.responses[200] = {
-        description: 'Account activated successfully'
+        description: 'Account activated successfully',
+        schema: { $ref: "#/components/schemas/ActivationResponse" }
       }
       #swagger.responses[400] = { description: 'Invalid or expired activation code' }
       #swagger.responses[500] = { description: 'Server Error' }
     */
-    const { activationCode } = req.params;
+    const { code } = req.query;
+
+    if (!code || typeof code !== "string") {
+      return res.status(400).json({
+        message: "Activation code is required",
+      });
+    }
 
     try {
-      const user = await User.findOne({ activationCode });
+      const user = await User.findOne({ activationCode: code });
       if (!user) {
-        return res.status(400).json({ 
-          message: "Invalid or expired activation code" 
+        return res.status(400).json({
+          message: "Invalid or expired activation code",
         });
       }
 
       if (user.isActive) {
-        return res.status(400).json({ 
-          message: "Account is already activated" 
+        return res.status(400).json({
+          message: "Account is already activated",
         });
       }
 
