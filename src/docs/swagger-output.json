@@ -109,6 +109,9 @@
           "400": {
             "description": "Invalid credentials"
           },
+          "403": {
+            "description": "Account not activated"
+          },
           "500": {
             "description": "Server Error"
           }
@@ -180,7 +183,7 @@
       }
     },
     "/v1/auth/activation": {
-      "get": {
+      "post": {
         "tags": [
           "Auth"
         ],
