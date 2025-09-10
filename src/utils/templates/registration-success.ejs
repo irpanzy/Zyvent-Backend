@@ -4,9 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Selamat Datang di Zyvent</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
       * {
         margin: 0;
@@ -32,7 +35,7 @@
       }
 
       .header {
-        background: #7A7A73;
+        background: #7a7a73;
         color: white;
         padding: 40px 30px;
         text-align: center;
@@ -122,7 +125,7 @@
 
       .btn {
         display: inline-block;
-        background: #7A7A73;
+        background: #7a7a73;
         color: white;
         text-decoration: none;
         padding: 14px 32px;
@@ -133,11 +136,11 @@
       }
 
       .btn:hover {
-        background: #57564F;
+        background: #57564f;
       }
 
       .notes {
-        background: #EDA35A;
+        background: #eda35a;
         border: 1px solid #f59e0b;
         border-radius: 8px;
         padding: 20px;
@@ -285,28 +288,29 @@
 
       <div class="content">
         <h1 class="welcome-text">Halo <%= username %>!</h1>
-        
+
         <p class="description">
-          Terima kasih sudah mendaftar di Zyvent. Akun kamu sudah berhasil dibuat, 
-          tinggal satu langkah lagi untuk bisa mulai menggunakan semua fitur yang ada.
+          Terima kasih sudah mendaftar di Zyvent. Akun kamu sudah berhasil
+          dibuat, tinggal satu langkah lagi untuk bisa mulai menggunakan semua
+          fitur yang ada.
         </p>
 
         <div class="user-info">
           <div class="info-row">
-            <span class="info-label">Nama: </span>
+            <span class="info-label">Nama: &emsp;</span>
             <span class="info-value"> <%= fullName %></span>
           </div>
           <div class="info-row">
-            <span class="info-label">Email: </span>
+            <span class="info-label">Email: &emsp;</span>
             <span class="info-value"> <%= email %></span>
           </div>
           <div class="info-row">
-            <span class="info-label">Username: </span>
-            <span class="info-value"> @<%= username %></span>
+            <span class="info-label">Username: &emsp;</span>
+            <span class="info-value">@<%= username %></span>
           </div>
           <div class="info-row">
-            <span class="info-label">Tanggal Daftar: </span>
-            <span class="info-value"> <%= createdAt %></span>
+            <span class="info-label">Tanggal Daftar: &emsp;</span>
+            <span class="info-value"><%= createdAt %></span>
           </div>
         </div>
 
@@ -318,7 +322,7 @@
         <div class="notes">
           <div class="notes-title">Penting untuk diperhatikan:</div>
           <div class="notes-list">
-            • Link aktivasi berlaku selama 24 jam<br>
+            • Link aktivasi berlaku selama 24 jam<br />
             • Kalau tombol tidak berfungsi, copy link di bawah ini:
             <div class="backup-link"><%= activationLink %></div>
           </div>
