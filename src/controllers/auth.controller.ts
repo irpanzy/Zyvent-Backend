@@ -65,7 +65,7 @@ export default {
           fullName: user.fullName,
           email: user.email,
           createdAt: user.createdAt?.toISOString().split("T")[0],
-          activationLink: `${process.env.CLIENT_HOST}/api/v1/auth/activation?code=${user.activationCode}`,
+          activationLink: `${process.env.CLIENT_HOST}/auth/activation?code=${user.activationCode}`,
         })) as string;
 
         await sendMail({
