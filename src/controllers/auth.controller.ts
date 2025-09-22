@@ -31,7 +31,7 @@ export default {
       #swagger.responses[400] = { description: 'Bad Request' }
       #swagger.responses[500] = { description: 'Server Error' }
     */
-    const { fullName, username, phoneNumber, email, password } =
+    const { fullName, username, phoneNumber, email, password, role } =
       req.body as TRegister;
 
     try {
@@ -49,13 +49,16 @@ export default {
 
       const activationCode = crypto.randomBytes(32).toString("hex");
 
+      // Use provided role or default to "user"
+      const userRole = role === "admin" ? "admin" : "user";
+
       const user = await User.create({
         fullName,
         username,
         phoneNumber,
         email,
         password: hashedPassword,
-        role: "user",
+        role: userRole,
         activationCode,
       });
 
@@ -201,8 +204,24 @@ export default {
       #swagger.parameters['code'] = {
         in: 'query',
         description: 'Activation code from email',
-        required: true,
+        required: false,
         type: 'string'
+      }
+      #swagger.requestBody = {
+        required: false,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                code: {
+                  type: 'string',
+                  description: 'Activation code from email'
+                }
+              }
+            }
+          }
+        }
       }
       #swagger.responses[200] = {
         description: 'Account activated successfully',
@@ -211,16 +230,22 @@ export default {
       #swagger.responses[400] = { description: 'Invalid or expired activation code' }
       #swagger.responses[500] = { description: 'Server Error' }
     */
-    const { code } = req.query;
+    // Check for activation code in query params or request body
+    let activationCode = req.query.code as string;
+    
+    // If not in query, check in body
+    if (!activationCode && req.body && req.body.code) {
+      activationCode = req.body.code;
+    }
 
-    if (!code || typeof code !== "string") {
+    if (!activationCode) {
       return res.status(400).json({
         message: "Activation code is required",
       });
     }
 
     try {
-      const user = await User.findOne({ activationCode: code });
+      const user = await User.findOne({ activationCode: activationCode });
       if (!user) {
         return res.status(400).json({
           message: "Invalid or expired activation code",
